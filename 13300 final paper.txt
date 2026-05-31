@@ -1,0 +1,434 @@
+\documentclass[12pt]{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{amsmath}
+\usepackage[margin=0.8in]{geometry}
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage{newtxtext,newtxmath} % Sets the font to Times New Roman
+\usepackage{caption}
+\usepackage{setspace} % Allows line spacing adjustments
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{hyperref} % Allows clickable links
+\usepackage{url}      % Handles URL formatting
+\doublespacing % Sets double spacing
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1em}
+
+\title{Testing the Validity of RD Designs \\for Statewide Ballot Measures}
+\author{Kevin Wu, Jianghuai Li\\ SOSC 13300, Professor Scott Cooley \vspace{24pt}}
+\date{May 2026}
+
+\begin{document}
+
+\maketitle
+
+\newpage
+\section{Introduction and literature review}
+
+The regression discontinuity (RD) design is a method widely used in modern social science providing evidence for causal effects. When treatment is assigned based on whether a continuous variable crosses a threshold, we can estimate the causal effect of the treatment by comparing observations just above and below the threshold. In the context of politics and policy analysis, an example would be investigating the effect of a policy like raising taxes by comparing the changes in communities where tax raising ballots measures barely passed and barely failed. The RD method justifies its causal relevance by the assumption that observations just above and below the threshold are likely to be similar in all respects except for the treatment received. Thus, this comparison mimics a randomized experiment.
+
+In political applications, analysis on elections using RD was threatened after multiple studies found that the winners and losers of close elections may in fact not be comparable. Snyder (2005), Caughey and Sekhon (2011) and Grimmer et al. (2011) together showed convincing evidence that close U.S. House elections post-war disproportionately favoured incumbents, and presented possible pathways to which incumbents could use their position to sort themselves across the threshold. This suggests that RD cannot be applied in a straightforward manner to U.S. House elections, since the winners and losers of close races appear to differ systematically, and thus cast doubt on the application of RD design more generally in electoral scenarios. In response, Eggers et al. (2015) conducted a wide validation of the RD design method using Placebo Tests (which we will refer to as covariate balance tests), showing that covariate balance only fails in the narrow subcategory of U.S. House elections amongst different countries and election categories. They also convincingly argued that any possible sorting mechanism explaining the anomaly of U.S. house elections is either theoretically or practically implausible, thus concluding U.S. house elections to be a false positive consistent with statistical chance at the 5\% significance level.
+
+Keeping in view Eggers et al.’s contribution towards validating RD design, we observe that Conlin and Thompson (2023) showed ballot measures face a similar problem. They suggest that agenda-setting abilities of city councils, township trustees, school boards, and county commissioners often allow for discretion over referenda characteristics like (for ballot measures on tax) the amount and type of tax, the timing of the referendum, and what the tax will be spent on. This enables a sorting mechanism for agenda setters to manipulate election outcomes, not precisely at the majority vote threshold, but visible in the changes of count and composition of ballots across the threshold when wider bandwidths are selected, which is commonly used in practice. Crucially, Conlin and Thompson invoke the Niskanen bureaucrat framework (seeking to maximize the expected budget) to theoretically explain how and why this distributional imbalance occurs and disproportionately affects elections near the cutoff. They subsequently validate their theoretical framework through McCrary and Covariate Balance Tests, showing how their mechanisms and findings follow a coherent pattern that maps onto the institutional structure of Ohio's tax referendum system, and the dimensions of what agenda-setters control against what they can’t control. This presents strong evidence for their agenda-setting framework by showing the behaviour in different actual scenarios follow what is expected from their proposed mechanisms. Their work then shows the direct threat to RD design by showing the contamination to a RD on Ohio home sales analysis and concludes by suggesting researchers explicitly account for the agenda setter's choices rather than assuming the choices are independent of election closeness.
+
+We respond to Conlin and Thompson’s work and provide an empirical validation of RD for ballot measures in a similar manner to Eggers et al. in spirit. While Conlin and Thompson investigated the agenda-setting mechanism for local tax referenda, we investigate state level ballot measures of all topics. At the state level, ballots generally fall into two types, Legislature-referred measures placed on the ballot by vote of state legislature, and citizen-initiated measures placed on ballots through citizen petition drives. We find that RD assumptions hold more cleanly for citizen-initiated measures compared to legislature-referred measures, and that agenda-setting behaviour presents itself convincingly in both fiscal and non-fiscal legislature-referred ballots, but not for citizen-initiated measures. We unfortunately fail to answer the question of whether state level ballots are fundamentally different in agenda-setting compared to sub-state level ballots.
+
+\section{Framework and Hypotheses}
+
+The framework of our study emerges naturally from the dataset we use: the NCSL Statewide Ballot Measures Database, compiled by Michigan State University’s Institute for Public Policy and Social Research.
+
+This dataset contains all statewide ballots measures across all 50 U.S. states from 1902 to 2016, giving a total of 7772 measures. After removing ballots without vote data, supermajority ballots, and popular referenda and other types of referenda due to small sample size and non-relevance to our study, we are left with a working sample of N = 6944 ballots of two types: legislative-referred and citizen-initiated ballots. These ballots range 39 different topic areas both fiscal and non-fiscal, and information is also provided about the year and election type in which the ballot was put to vote.
+
+Conlin and Thompson’s study was limited to sub-state level tax ballots in Ohio, possibly deliberately in order to provide strong evidence for their theoretical agenda-setting mechanism. We observe our dataset differs from their study in a few crucial ways. First, our dataset only has data on statewide ballots, and importantly contains all kinds of different topics both tax or fiscal related, and non-fiscal like agriculture and arts and culture. Secondly, our dataset contains both legislative-referred and citizen-initiated ballots, while Conlin and Thompson only studied legislative-referred ballots. These differences prompt three natural hypotheses for our study.
+
+-	Since citizen-initiated ballots are put forward in a manner usually similar to grassroots efforts, there is less likely to be single strong agenda-setter like government. Thus, \textbf{(H1)} RD assumptions should hold more cleanly for citizen-initiated measures compared to legislature-referred measures at the state level.\\
+-	The Niskanen bureaucrat model is a special case of a more general agenda-setting incentive, and Conlin and Thompson only investigated the agenda-setting mechanism on tax ballots. We believe there is a simple broader principle that if an institutional actor places a measure on the ballot, they generally have an objective either to have the ballot to pass or fail. They'll use whatever discretion they have over framing and timing to increase the probability of passage or failure. This doesn't require budget maximization as the objective and applies to any kind of ballot topic. As a result, \textbf{(H2)} we hypothesize that agenda-setting behaviour exists in ballots beyond fiscal measures.\\
+-	\textbf{(H3)} State-level ballots differ from school district, township, and county ballots in agenda-setting behaviour. 
+
+We deliberately do not make hypotheses about agenda-setting mechanisms because we do not have the data in our dataset to make good arguments for such hypotheses. To test our hypotheses, we conduct \textbf{McCrary Density Tests, Covariate Balance Tests, and an Omnibus F-test}. We do not formally include the Topological Data Analysis within the main results because it fails to provide helpful evidence in our study. We move the discussion of TDA to Appendix A.
+
+We consider this conceptual framework to better ground our hypotheses in context of our chosen dataset.
+
+a. State-level, legislative-referred, fiscal: Legislature has agenda-setting incentive but potentially different constraints and mechanisms than sub-state local taxing authorities. Niskanen bureaucrat applies.\\
+b. State-level, legislative-referred, non-fiscal: Legislature still wants passage, but theoretical framework must be a more general motivation for passage.\\
+c. State-level, citizen-initiated, fiscal: No single institutional agenda-setter. Interest groups may try to influence outcomes, but potentially through different channels rather than institutional discretion. Niskanen bureaucrat doesn’t apply even though topic is fiscal.\\
+d. State-level, citizen-initiated, non-fiscal: Similar to point c.
+
+Our analysis for the \textbf{McCrary Density Tests and Covariate Balance Tests} are performed with reference to this framework, while the Omnibus F-test is not relevant to this framework. This will become clear in the methods and results sections.
+
+\section{Methods}
+
+For the sake of conciseness, we cover the important information for this section (Methods) and the next (Results). We present the full results in Appendix B, and present the code and dataset used at this GitHub link \url{https://github.com/fellstar-101/social-science-research/tree/main} for readers to replicate our results. 
+
+Our running variable for all tests is vote margin $m=pctyesvotes - 50$, and the threshold for tests unless otherwise stated is 0\% vote margin. Our main grouping variable is type which has the categories \{Legislature-referred, Citizen-initiated\} at count \{4540, 2404\}. Our secondary grouping variable (as hinted in the framework) is the fiscal, non-fiscal split. A measure is classified as fiscal if it is tagged with at least one of: \textit{tax\_rev} (tax and revenue), \textit{bond\_meas} (bond measures), or \textit{budgets} (budget-related). Formally we have $\textit{is\_fiscal} = \max\{\textit{tax\_rev}, \textit{bond\_meas}, \textit{budgets}\}$. This narrow definition is intentional and follows Conlin \& Thompson.
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{lr}
+        \hline
+        Subsample & N \\
+        \hline
+        Fiscal legislative referrals & 1,909 \\
+        Non-fiscal legislative referrals & 2,631 \\
+        Fiscal initiatives & 632 \\
+        Non-fiscal initiatives & 1,772 \\
+        \hline
+    \end{tabular}
+    \caption{Subsample counts for fiscal and non-fiscal measures}
+    \label{tab:subsamples}
+\end{table}
+
+\subsection{McCrary Density Tests}
+
+Under as-if random assignment near the threshold, the count or density of ballots should be continuous at $m = 0$ (McCrary, 2008). Manipulation by an agenda-setter would cause bunching just above or below the threshold, producing a discontinuity at $\lim_{m \to 0^+} f(m) > \lim_{m \to 0^-} f(m)$ or $\lim_{m \to 0^+} f(m) < \lim_{m \to 0^-} f(m)$, where $f(m)$ represents the density at vote margin $m$.
+
+We use the `rddensity` package in R by Cattaneo, Jansson \& Ma (2020), considered the current gold standard for McCrary Density Tests. rddensity estimates $f(m)$ using local polynomial density estimation on each side of the cutoff with automatic data-driven bandwidth selection and a jackknife variance estimator. The rddensity test statistic also uses bias-corrected inference that accounts for the additional estimation difficulty at boundary points (like the threshold). We report the density ratio $\hat{f}(0^+) / \hat{f}(0^-)$, which equals 1 under no manipulation. The test is run on all measures, legislative/citizen measures separately, and the fiscal/non-fiscal split for both legislative referrals and initiatives.
+
+\subsection{Covariate Balance Tests}
+
+Under as-if random assignment, pre-treatment covariates should not predict passage. For each binary covariate, we estimate a separate regression:
+$$Y_i = \alpha + \beta_1 \cdot \mathbf{1}[m_i \geq 0] + \gamma_1 m_i \cdot \mathbf{1}[m_i \geq 0] + \delta_1 m_i \cdot \mathbf{1}[m_i < 0] + \varepsilon_i$$
+where $Y_i \in \{0, 1\}$ is the covariate value for measure $i$, $m_i$ is its vote margin. The equation fits separate local linear slopes on each side of the threshold, so that $\beta_1$ estimates the discontinuous jump of the covariate at $m = 0$. This regression is estimated once per covariate, each time using all measures in the subsample as observations, and the expression above is expected to hold $\forall i$. We use `rdrobust` (Calonico, Cattaneo, Farrel \& Titiunik, 2017) with MSE-optimal bandwidth (bwselect='mserd'), triangular kernel, and standard errors clustered by state to account for within-state correlation arising from shared rules and norms. Under the null, $\hat{\beta}_1 = 0$ for all pre-treatment covariates. 
+
+After running rdrobust on all covariates, we flag results where the number of positive cases $Y_{i} = 1$ within the MSE-optimal bandwidth is fewer than 10, or fewer than 5 on either side of the threshold, due to concerns about small sample size. Flagged covariates are removed before multiple testing correction and omitted in downstream analysis. Holm-Bonferroni correction is applied across all reliable covariates within each subsample. We report robust bias-corrected p-values.
+
+To clarify, this regression uses all observations near the threshold as the sample, both those with $Y_{i} = 1$ and $Y_{i} = 0$. The covariate is the outcome variable in these balance tests, not a filter on the sample. The filter on the sample to test we apply as legislative/citizen and fiscal/non-fiscal splits independently.
+
+Taking a step back, we observe that to test \textbf{H1}, splitting by legislative/citizen and running independently on each is sufficient. To test \textbf{H2}, we split our sample into the 4 cases of legislative/citizen and fiscal/non-fiscal and likewise run the full covariate balance battery on each. For \textbf{H2}, if agenda-setting is purely fiscal, imbalances should appear only in the fiscal subsample. We show in the results that the additional fiscal/non-fiscal split can reveal effects hidden in the pooled sample in the form of Simpson's paradox: if a covariate has opposite-signed discontinuities in the fiscal and non-fiscal subsamples, the pooled test averages them together and may show no effect.
+
+\subsection{Omnibus F-test with Randomisation Inference}
+
+The Covariate Balance tests, because they test covariate-by-covariate, may miss distributional imbalances across the threshold that are individually weak but jointly informative. The omnibus test regresses the treatment indicator $D_i = \mathbf{1}[m_i \geq 0]$ on all reliable covariates simultaneously and tests whether the joint $R^2$ exceeds what would occur by chance:
+$$D_i = \gamma_0 + \gamma_1 X_{i1} + \cdots + \gamma_K X_{iK} + u_i$$
+$$F = \frac{R^2 / K}{(1 - R^2) / (n - K - 1)}$$
+The p-value is computed via randomisation inference, where we permute $D_i$ 5,000 times to break any relationship with covariates, computing $F$ each time, and report the fraction of permutation $F$-values exceeding the observed $F$. We observe that this procedure serves as a test for significance.
+
+We run this test at bandwidths $h \in \{3, 5, 7, 10, 13, 15\}$ percentage points. Then because using all covariates including sparse ones can produce spurious significance, we only use reliable covariates at each bandwidth. $n$ is the number of samples after reliability check at bandwidth $h$, and $K$ is the count of covariates that are deemed reliable. The reliability check is the following process below,
+
+1. Screen at $\pm5$pp. For each binary covariate, count the number of passing cases among all measures of that topic within $\pm5$pp of the threshold. If the count is $<10$, we discard the covariate. \textit{general\_election} goes through an analogous screen and passes easily. This screening doesn't apply to \textit{year}.\\
+2. Remove zero-variance columns at each bandwidth \{3, 5, 7, 10, 13, 15\} when conducting the test for that bandwidth. In practice this step had no effect on the samples used.\\
+3. If $n\leq K+10$, remove the F-test for that bandwidth entirely. This in practice also was not triggered.
+
+\section{Results}
+\vspace{-20pt}
+\subsection{McCrary Density Tests}
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{lccccc}
+        \hline
+        Sample & T-stat & p-value & $\hat{f}(0^-)$ & $\hat{f}(0^+)$ & Ratio \\
+        \hline
+        All measures & 0.856 & 0.392 & 0.0219 & 0.0246 & 1.13 \\
+        Initiatives & $-0.444$ & 0.657 & 0.0258 & 0.0234 & 0.91 \\
+        Legislative referrals & 1.519 & 0.129 & 0.0195 & 0.0253 & 1.30 \\
+        Popular referenda & 0.138 & 0.890 & 0.0234 & 0.0251 & 1.07 \\
+        \hline
+    \end{tabular}
+    \caption{Density tests by legislature/citizen measure type}
+    \label{tab:density_all}
+\end{table}
+
+\begin{figure}[htbp]
+    \centering
+    % It is often best to scale the image to the width of the text
+    \includegraphics[width=\textwidth]{density test for submission.png}
+    \caption{Density test distributions for Initiatives and Legislative ballots. The red dashed line indicates the 50\% pass/fail threshold.}
+    \label{fig:density_test}
+\end{figure}
+
+Initiatives show no evidence of density manipulation (ratio 0.91, $p = 0.657$). Legislative referrals produces a density suggesting of discontinuity, with 30\% more density just above the threshold. Although the p-value is somewhat low, the formal test is not significant ($p = 0.129$). This seems to suggest that the density of ballots above and below the threshold show no evidence of agenda-setting. However, as it turns out, after taking the fiscal/non-fiscal split, fiscal legislative referrals show a highly significant density discontinuity ($p = 0.008$) with nearly twice as many fiscal referrals barely passing as barely failing. Non-fiscal legislative referrals show a ratio of almost exactly 1.00 ($p = 0.987$), while neither citizen fiscal/non-fiscal subsample shows significant manipulation. This presents a completely different narrative, and it is clear that a fiscal/non-fiscal split is important for our study.
+\begin{figure}[htbp]
+    \centering
+    
+    % --- The Table Part ---
+    \begin{tabular}{lccc}
+        \hline
+        Sample & T-stat & p-value & Ratio \\
+        \hline
+        Leg.Ref --- Fiscal & 2.636 & \textbf{0.008*} & \textbf{1.90} \\
+        Leg.Ref --- Non-fiscal & $-0.016$ & 0.987 & 1.00 \\
+        Initiative --- Fiscal & $-1.046$ & 0.296 & 0.65 \\
+        Initiative --- Non-fiscal & 0.365 & 0.715 & 1.09 \\
+        \hline
+    \end{tabular}
+    \captionof{table}{Fiscal/non-fiscal density split}
+    \label{tab:density_split}
+    
+    % Standard positive vspace works perfectly here since they are in the same box
+    \vspace{20pt} 
+    
+    % --- The Figure Part ---
+    \includegraphics[width=\textwidth]{fig_density_fiscal_split for submission.png}
+    \captionof{figure}{Density of vote margin split by fiscal and non-fiscal measures for legislative referrals and initiatives. The dashed line indicates the 50\% pass/fail threshold.}
+    \label{fig:density_fiscal_split}
+\end{figure}
+
+Legislative-referred ballots seem to have density sorting for fiscal ballots, and citizen-initiated ballots see no sorting for fiscal or non-fiscal ballots. This suggests that for \textbf{H1}, indeed the agenda-setting mechanism is stronger for legislative ballots. For \textbf{H2}, while it seems like only fiscal-ballots have present agenda-setting behavior, we omit making strong statements here because Covariate Balance tests actually produces a differing result. Overall, these results also suggest that legislative-referred ballots and citizen-initiated ballots have different mechanisms of agenda-setting if citizen-initiated ballots have any, because if they had similar agenda-setting mechanisms we would expect similar density sorting behavior which we don't observe.
+
+\subsection{Covariate Balance Tests}
+
+Here a positive coefficient $\hat{\beta_1}$ indicates the topic is overrepresented among barely-passing legislative referrals, and a negative coefficient indicates the topic is overrepresented among barely-failing referrals.
+
+We first discuss the citizen/legislative split. For \textbf{Initiatives (N = 2,404, 33 reliable covariates)}, we have two covariates significant at 5\%: \textit{tax\_rev} ($\hat{\beta}_1 = -0.111$, $p = 0.043$) and \textit{transportation} ($\hat{\beta}_1 = -0.045$, $p = 0.045$). This is 2 out of 33, versus 1.7 expected by chance at $\alpha = 0.05$. Neither survives Holm correction. Year ($p = 0.258$) and general election ($p = 0.779$) are not significant.
+
+For \textbf{Legislative referrals (N = 4,540, 34 reliable covariates)}, we have 3 of 34 covariates \textit{ed\_prek12, tax\_rev,} and \textit{legislatures} significant at 5\% versus 1.7 by chance. After Holm correction across 34 tests, \textbf{only \textit{ed\_prek12} survives}. Year ($p = 0.809$) and general election ($p = 0.607$) are not significant. However, if we look at table 4, we realise that for the Leg.Ref split, \textit{tax\_rev} having a higher p-value than \textit{ed\_prek12} is already unexpected. Previously in the density test we established that there was no significant density sorting for non-fiscal splits. \textit{tax\_rev} is a fiscal topic by definition, while \textit{ed\_prek12} has ballots that don't match any fiscal topics and are thus inherently non-fiscal, so already \textit{ed\_prek12} seems to be pointing towards the idea that perhaps non-fiscal topics do experience some agenda-setting.
+
+To test this fiscal and non-fiscal agenda setting, we conduct the fiscal/non-fiscal split within the citizen/legislative split. For \textbf{Fiscal legislative referrals (N = 1,909, 21 reliable covariates).} Only \textit{ed\_prek12} is significant ($\hat{\beta}_1 = 0.171$, $p = 0.0001$), surviving Holm correction ($p_{\text{Holm}} = 0.002$). This is one covariate significant at 5\% versus 1.1 expected by chance. Notably, \textit{tax\_rev} is \textit{not} significant within this subsample ($p = 0.168$). This may be because the full-sample (legislative, without fiscal/non-fiscal split) \textit{tax\_rev} test uses all observations near the threshold including non-fiscal ones (which all have \textit{tax\_rev} = 0). The full-sample significance may partly reflect the broader fiscal manipulation signal (more fiscal measures barely passing), not a \textit{tax\_rev}-specific effect. Within fiscal measures, that broader signal is no longer present, and \textit{tax\_rev} loses significance. 
+
+
+\begin{table}[htbp]
+\centering
+\caption{Covariate Balance --- All Covariates Significant at 5\% (Raw)}
+\label{tab:covariate_balance}
+\small
+\begin{tabular}{llrlrrrrl}
+\hline
+Split & $N$ & $n_{\text{rel}}$ & Covariate & $\hat{\beta}_1$ & SE & $p_{\text{rob}}$ & $p_{\text{Holm}}$ & Bandwidth \\
+\hline
+Initiative              & 2{,}404 & 33 & tax\_rev        & $-0.111$ & 0.065 & 0.043          & 1.000          & 7.2 \\
+Initiative              & 2{,}404 & 33 & transportation  & $-0.045$ & 0.025 & 0.045          & 1.000          & 8.4 \\
+\hline
+Leg.Ref                 & 4{,}540 & 34 & ed\_prek12      &    0.136 & 0.030 & $<$0.001       & \textbf{$<$0.001*} & 4.9 \\
+Leg.Ref                 & 4{,}540 & 34 & tax\_rev        &    0.133 & 0.058 & 0.006          & 0.202          & 6.9 \\
+Leg.Ref                 & 4{,}540 & 34 & legislatures    & $-0.083$ & 0.047 & 0.031          & 0.959          & 6.6 \\
+\hline
+Leg.Ref $\times$ Fiscal & 1{,}909 & 21 & ed\_prek12      &    0.171 & 0.050 & $<$0.001       & \textbf{0.002*} & 5.6 \\
+\hline
+Leg.Ref $\times$ Non-fiscal & 2{,}631 & 26 & natresourc  & $-0.055$ & 0.020 & 0.003          & 0.085          & 12.1 \\
+Leg.Ref $\times$ Non-fiscal & 2{,}631 & 26 & ed\_prek12  &    0.064 & 0.029 & 0.010          & 0.250          & 5.6 \\
+Leg.Ref $\times$ Non-fiscal & 2{,}631 & 26 & localgov    &    0.105 & 0.051 & 0.024          & 0.548          & 13.2 \\
+\hline
+Init.\ $\times$ Fiscal     & 632   & 15 & ---            & ---      & ---   & ---            & ---            & --- \\
+Init.\ $\times$ Non-fiscal & 1{,}772 & 30 & ---          & ---      & ---   & ---            & ---            & --- \\
+\hline
+\end{tabular}
+
+\vspace{4pt}
+\medskip
+\raggedright\footnotesize
+Notes: $n_{\text{rel}}$ is the count of reliable covariates tested (binary covariates with $\geq 10$ 
+positive cases within MSE-optimal bandwidth, plus \textit{year} and \textit{electiontype}). SE is the robust bias-corrected standard error. 
+Bandwidth is the MSE-optimal bandwidth (pp). Holm correction is applied within each split; 
+Year ($p > 0.25$) and general election ($p > 0.13$) are not significant in any split. 
+Rows with ``---'' indicate zero significant covariates.
+\end{table}
+
+
+For \textbf{Non-fiscal legislative referrals (N = 2,631, 26 reliable covariates),} we have three covariates significant at 5\%. None survive Holm correction individually, but three covariates significant at 5\% versus 1.3 expected by chance (2.3$\times$ the expected rate) represents an elevated count that should not be disregarded. Importantly \textbf{\textit{ed\_prek12} is pre-correction significant in both fiscal and non-fiscal legislative splits}. These are completely disjoint sets of measures. There are 95 non-fiscal \textit{ed\_prek12} legislative referrals that carry no fiscal tags; they are tagged with topics like local government (23\%), state government (22\%), and gambling/lottery (10.5\%). Even within this legislative non-fiscal split, removing all the possible fiscal sorting signal, \textit{ed\_prek12} still presents a distributional imbalance across the threshold, and this presents strong evidence for \textbf{H2}, that agenda-setting mechanisms exist and are observed outside of fiscal settings, albeit limited to legislative ballots, since citizen ballots show no significant covariates. We note that this doesn't contradict the non-fiscal null results of the McCrary Density Test, because distributional imbalance can occur without density sorting.
+
+We also observe an interesting case of the \textbf{Simpson's paradox.} The \textit{natresourc} and \textit{localgov} results in the Leg.Ref $\times$ Non-fiscal split are invisible in the pooled analysis due to opposite cancelling effects within the fiscal/non-fiscal splits. Splitting the sample reveals genuine heterogeneity that was masked:
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{lccc}
+        \hline
+        Covariate & Fiscal diff & Non-fiscal diff & Full sample diff \\
+        \hline
+        \texttt{natresourc} & $+0.055$ & $-0.026$ & $+0.011$ (cancels) \\
+        \texttt{localgov} & $-0.068$ & $+0.044$ & $-0.005$ (cancels) \\
+        \hline
+    \end{tabular}
+    \caption{Covariate differences by fiscal status illustrating Simpson's paradox}
+    \label{tab:simpsons_paradox_covariates}
+\end{table}
+
+While none of \textit{natresourc}, \textit{localgov} and \textit{ed\_prek12} survive Holm correction, having three covariates significant at 5\% when 1.3 is expected by chance ($P(\text{Bin}(26, 0.05) \geq 3) \approx 0.14$) is suggestive that there is some kind of distributional imbalance that, because we have removed all the fiscal signal within the non-fiscal split, must come from non-fiscal agenda-setting behaviour. Under a quadratic specification for rdrobust, \textit{natresourc} actually strengthens to survive Holm correction ($p_\text{holm}=0.016$) giving good evidence for non-fiscal agenda-setting, while  \textit{localgov} loses significance ($p=0.163$). This suggests that some topics are robust to specification choice while others are not. We note that we are unable to say if this non-fiscal agenda-setting behaviour is stronger or weaker than fiscal agenda-setting behaviour, nor are we able to say conclusively if the mechanisms of agenda-setting are different, other than the fact that non-fiscal agenda-setting cannot take the Niskanen framework by definition. We suspect there might be some further fundamental difference between fiscal and non-fiscal agenda-setting because of the asymmetric McCrary Density Test results. We additionally note that the fact that citizen ballots have no significant covariate imbalance after its fiscal/non-fiscal splits somewhat allays concerns that the non-fiscal legislative referral imbalances are a data artifact, and also provides evidence for \textbf{H1} by showing a lack of covariate imbalance where legislative splits show such imbalance.
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{lccccc}
+        \hline
+        Subsample & N & Reliable & Sig at 5\% & Expected & Ratio \\
+        \hline
+        Non-fiscal Leg.Ref & 2,631 & 26 & \textbf{3} & 1.3 & \textbf{2.3$\times$} \\
+        Non-fiscal Init. & 1,772 & 30 & \textbf{0} & 1.5 & \textbf{0$\times$} \\
+        Fiscal Leg.Ref & 1,909 & 21 & 1 & 1.1 & 0.9$\times$ \\
+        Fiscal Init. & 632 & 15 & 0 & 0.75 & 0$\times$ \\
+        \hline
+    \end{tabular}
+    \caption{Ratios of expected false positives against actual positives for each citizen/legislature $\times$ fiscal/non-fiscal split.}
+\end{table}
+
+\subsection{Omnibus F-test}
+
+We can think of the F-statistic as such, $F = \frac{\text{Explained Variance (Signal)}}{\text{Unexplained Variance (Noise)}}$. Intuitively, the numerator (signal) is how much the overall profile of the covariates differ between the "barely passing" and "barely failing" groups. The denominator (noise) is the random, expected variation you would naturally see between any two groups. So When $F \approx 1$, the signal is indistinguishable from noise, so the covariates, taken together, do not meaningfully predict the difference between passing and failing. However, when $F \gg 1$ gets much larger than 1, the signal is meaningfully predictive above noise. 
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{lcccccc}
+        \hline
+        Type & $h = 3$ & $h = 5$ & $h = 7$ & $h = 10$ & $h = 13$ & $h = 15$ \\
+        \hline
+        \textbf{Initiative} & & & & & & \\
+        $F$-statistic & 1.08 & 1.01 & 1.01 & 1.30 & 1.51 & 1.84 \\
+        $p$-value     & 0.37 & 0.46 & 0.46 & 0.12 & 0.035 & 0.002 \\
+        \hline
+        \textbf{Leg.Ref} & & & & & & \\
+        $F$-statistic & 1.03 & 0.93 & 1.13 & 2.01 & 3.32 & 4.03 \\
+        $p$-value     & 0.43 & 0.58 & 0.29 & 0.001 & $< 0.001$ & $< 0.001$ \\
+        \hline
+    \end{tabular}
+    \caption{Updated Omnibus F-test results across extended bandwidths ($h$)}
+    \label{tab:omnibus_ftest_updated}
+\end{table}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{fig_omnibus_extended for submission.png}
+    \caption{Omnibus F-statistic and corresponding p-values across different bandwidths for initiatives and legislative referrals. The dashed red line in the right figure indicates the $\alpha = 0.05$ significance threshold.}
+    \label{fig:omnibus_ftest}
+\end{figure}
+
+Both citizen and legislative ballots show no joint covariate imbalance at $h \leq 7$, but increasingly and highly significant imbalance at $h\geq 10$. This pattern of clean at narrow bandwidths, significant at wider ones, at first glance may be consistent Conlin and Thompson's agenda-setting that shifts the overall composition of measures near the threshold without enabling precise control over individual margins. In fact for Conlin and Thompson's analysis, they used a bandwidth of between $\pm$5pp to $\pm$11.5pp, our results remain consistent with their results up till a bandwidth of $\pm10$pp.
+
+However, above 10pp bandwidth, we see that the F-test behaves unexpectedly. It becomes increasingly unlikely that indeed we have a coarse sorting mechanism that only shows up at larger bandwidths, since the $F$ statistic keeps increasing. As a result we believe that this increase in $F$ and drop in p-value is actually an artifact. Consider that as bandwidth increases, you introduce many confounders that were not significant at small bandwidths. One example could be that the average vote share at which ballots of an example topic \textit{student\_affairs} pass is 70\%. At large bandwidth, we could simply say that since \textit{student\_affairs} is so likely to pass, if we see one we know it's predictive of passing. Observe that at small bandwidth around the threshold we don't have this problem.
+
+We omit a formal analysis in this study, but believe that the F-test result is thus at best unreliable in its current form for our use case. It isn't contradictory to Conlin and Thompson, but it is definitely not conclusive. We believe there may be a way to fairly conduct an Omnibus test that accounts for the presence of confounding factors at larger bandwidths, but omit discussion of this due to time constraints.
+
+\section{Limitations}
+
+There remain some limitations to our study that we did not previously acknowledge under the Results section. We'd like to acknowledge that using Holm correction in Covariate Balance Tests is an extremely, possibly overly conservative approach. Holm correction is usually only used when we cannot afford false positives. We deliberately choose Holm correction in this study as opposed to less conservative options like Benjamini-Hochberg correction which allows for some chance of false positives, and we acknowledge this could have understated the agenda-setting effects at all splits, which presents our results as emerging from conservative assumptions. This may not be a bad thing, but nonetheless presents a limitation since we didn't include the BH correction alongside the Holm correction.
+
+Additionally, our sample spans 1902 to 2016, a period over which electoral institutions, voting technology, campaign strategy, and the initiative ballot process itself have changed substantially. While we include year in the covariate balance tests, this only checks for a discontinuity in the average year of barely-passing versus barely-failing measures, not for the possibility that agenda-setting behavior differ across eras. It is plausible that legislative agenda-setting capacity has increased with modern polling and data analytics, or conversely that earlier periods with less regulatory oversight permitted more manipulation. A pre/post-WWII split or decade-level analysis could help determine whether some results are driven by particular historical periods.
+
+We also acknowledge we conducted other tests including placebo-cutoff, leave-one-state-out, and fixed bandwidth robustness tests that we did not include here and for some did not conduct significant analysis on due to time constraints and for the sake of conciseness. This is a  limitation of the paper, because we are only able to present most of the story, but not all of it. Nonetheless, we provide the code we used to conduct these additional tests not mentioned in the paper, and invite readers to replicate our results and continue from there. Our work serves as a preliminary analysis for validating RD design for studies relating to ballot measures, and should not be seen as a conclusive analysis.
+
+\section{Conclusions}
+
+We review our hypotheses in view of our results.
+
+\textbf{H1}. We observe that citizen-initiated ballots show no significant violation of RD assumptions across most tests, with the exception of two covariate imbalances for the initiative split of the Covariate Balance Tests. The opposite is true for legislative-referred ballots, which we observe to have density imbalance for fiscal ballots, and covariate imbalances for every split. It is clear that RD assumptions hold more cleanly for citizen ballots than legislature ballots.
+
+\textbf{H2}. The McCrary Density Test provided evidence against this hypothesis by showing no density sorting for non-fiscal measures. However, using Covariate Balance Tests, we were able to isolate the covariate imbalance of non-fiscal measures, and determine that non-fiscal topics like \textit{natresourc}, \textit{localgov} and \textit{ed\_prek12} present good evidence of non-fiscal agenda-setting behavior. Thus overall evidence is in favor that agenda-setting behavior exists in ballots beyond fiscal measures.
+
+\textbf{H3}. We are unable to provide direct evidence for or against the idea that state-level ballots differ from sub-state level ballots in agenda-setting behavior. We would like to say that the Niskanen bureaucrat framework seems to extend to state-level ballots somewhat, but the fact is we are unable to determine why density sorting or covariate imbalance occur for fiscal splits, even as we suspect the mechanism to be different for non-fiscal splits. This is a fundamental limitation of our chosen dataset. To better validate this hypothesis, we would need to map ballot passage rates to agenda-setting opportunities within the rules of a political system, in a manner similar to how Conlin and Thompson conducted their study.
+
+Overall, we largely validated citizen-initiated ballots to abide by RD assumptions, while showing that for legislature-referred ballots extra care will need to be taken to work with the possibility of sorting or covariate imbalance. We encourage readers to conduct these RD validating tests themselves if they are not sure whether to pursue RD as a method in their study. 
+
+\newpage
+
+\section*{Bibliography}
+
+1.	Snyder, J. M. (2005). Detecting manipulation in U.S. House elections [Unpublished manuscript]. University of California, Los Angeles.
+
+2.	Caughey, D., \& Sekhon, J. S. (2011). Elections and the regression discontinuity design: Lessons from close U.S. House races, 1942–2008. Political Analysis, 19(4), 385–408.
+
+3.	Grimmer, J., Hersh, E., Feinstein, B. D., \& Carpenter, D. (2011). Are close elections random? [Unpublished manuscript]. Stanford University.
+
+4.	Eggers, A. C., Fowler, A., Hainmueller, J., Hall, A. B., \& Snyder, J. M., Jr. (2015). On the validity of the regression discontinuity design for estimating electoral effects: New evidence from over 40,000 close races. American Journal of Political Science, 59(1), 259–274.
+
+5.	Conlin, M., \& Thompson, P. N. (2023). Agenda-setting and tax referenda: Implications for regression discontinuity identification strategy using election outcomes. National Tax Journal, 76(4), 869–896. https://doi.org/10.1086/726225
+
+6.	National Conference of State Legislatures. (2016). NCSL statewide ballot measures database [Data set]. Institute for Public Policy and Social Research, Michigan State University. https://ippsr.msu.edu/public-policy/correlates-state-policy/ncsl-ballot-measures-correlates
+
+7.	Calonico, S., Cattaneo, M. D., Farrell, M. H., \& Titiunik, R. (2017). rdrobust: Software for regression-discontinuity designs. The Stata Journal, 17(2), 372–404. https://doi.org/10.1177/1536867X1701700208
+
+8.	Cattaneo, M. D., Jansson, M., \& Ma, X. (2020). Simple local polynomial density estimators. Journal of the American Statistical Association, 115(531), 1449–1455. https://doi.org/10.1080/01621459.2019.1635480
+
+9.	McCrary, J. (2008). Manipulation of the running variable in the regression discontinuity design: A density test. Journal of Econometrics, 142(2), 698–714.
+
+10.	Chazal, F., \& Michel, B. (2021). An introduction to topological data analysis: Fundamental and practical aspects for data scientists. Frontiers in Artificial Intelligence, 4, Article 667963. https://doi.org/10.3389/frai.2021.667963
+
+11.	Duchin, M., Needham, T., \& Weighill, T. (2022). The (homological) persistence of gerrymandering. Foundations of Data Science, 4(4), 581–622. https://doi.org/10.3934/fods.2021007
+
+12.	Godwin, A., Kirn, A., Benson, L., \& Potvin, G. (2019, June 15–19). Using topological data analysis in social science research: Unpacking decisions and opportunities for a new method [Conference paper]. ASEE Annual Conference \& Exposition, Tampa, FL, United States.
+
+13.	Singh, G., Mémoli, F., \& Carlsson, G. (2007). Topological methods for the analysis of high dimensional data sets and 3D object recognition. In M. Botsch \& R. Pajarola (Eds.), Eurographics Symposium on Point-Based Graphics (pp. 91–100). The Eurographics Association. https://doi.org/10.2312/spbg/spbg07/091-100
+
+\newpage
+
+\section*{Appendix A, Results on TDA}
+
+\subsection*{Empirical Framework}
+As a descriptive supplement to our regression discontinuity validity analysis, we implement a Mapper visualization for close ballots. We restrict our sample to ballot measures with known pass/fail status, valid vote share, and
+\[
+| pctyesvotes - 50 | \le 5.
+\]
+This produces a working sample of 581 citizen-initiated measures and 1015 legislature-referred measures. We also restrict each ballot measure to a binary topic vector using all available topic indicators in the dataset. We exclude other features like year and election type so that the resulting clusters purely reflect topic composition.
+
+We implement Mapper in four steps. First, we construct the topic-feature matrix for the close-race sample and standardize the topic indicators. Second, we summarize the resulting high-dimensional topic matrix with a two-dimensional lens based on the first two principal components. Third, we place an overlapping cover on this lens space and apply DBSCAN within each local region to identify clusters of ballot measures with similar topic profiles. Fourth, each local cluster becomes a node in the Mapper graph, and two nodes are connected when overlapping regions contain some of the same ballot measures. In the final graph, node size indicates the number of ballot measures in a cluster, node color indicates the share of measures in that cluster that passed, and node labels summarize the dominant topic in that cluster. We deliberately de-emphasize the edges between nodes in the final graph for visual clarity, as they do not add substantive information beyond the node structure.
+
+\subsection*{Results}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{mapper_initiative.png}
+        \caption{Mapper result of initiative samples}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{mapper_legislative.png}
+        \caption{Mapper result of legislative samples}
+    \end{subfigure}
+    \caption{Mapper algorithm result}
+    \label{fig:2d-comparison}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Largest Mapper nodes in the topic-only close-race sample}
+\label{tab:mapper-largest-nodes}
+
+\begin{tabular}{llcc}
+\hline
+Measure type & Dominant topic & Node size ($n$) & Pass rate \\
+\hline
+Citizen-initiated & Tax/Rev     & 40 & 0.33 \\
+Citizen-initiated & Tax/Rev     & 40 & 0.33 \\
+Citizen-initiated & Business    & 24 & 0.42 \\
+Citizen-initiated & Business    & 24 & 0.42 \\
+Citizen-initiated & Elections   & 17 & 0.47 \\
+\hline
+Legislature-referred & Tax/Rev    & 67 & 0.57 \\
+Legislature-referred & Tax/Rev    & 67 & 0.57 \\
+Legislature-referred & Tax/Rev    & 67 & 0.57 \\
+Legislature-referred & Tax/Rev    & 67 & 0.57 \\
+Legislature-referred & Legislatures & 50 & 0.54 \\
+\hline
+\end{tabular}
+\end{table}
+
+Figure 1 and table 1 presents the Mapper comparison for the working sample. The main pattern is that Tax/Revenue as a topic is prominent in both citizen-initiated and legislature-referred measures. The difference lies in the degree of concentration. The citizen-initiated subset of our working sample appears more mixed across several prominent topic families, with large clusters labeled Tax/Revenue, Business, and Elections. By contrast, the legislature-referred samples are repeatedly concentrated in large Tax/Revenue-related clusters, along with a large Legislatures cluster.
+
+We interpret this result as evidence that close legislature-referred measures are more strongly organized around a smaller set of topic families, whereas close citizen-initiated measures are more dispersed across multiple topics. This descriptive pattern is broadly consistent with the paper's broader concern about compositional sorting in settings where institutional actors have greater control over the ballot agenda.
+
+\subsection*{Discussion}
+
+The Mapper results suggest that close legislature-referred measures are predominantly concentrated around Tax/Revenue, whereas close citizen-initiated measures are more dispersed across topics including Tax/Revenue, Business, and Elections. This pattern is somewhat consistent with the compositional sorting that our covariate balance tests detect in legislative referrals.
+However, a fundamental limitation of the Mapper approach is the absence of an inferential framework. There is no way to assign statistical significance to differences between graphs, so it's impossible to tell if the concentrated topic structure among legislative referrals reflects noise rather than genuine compositional sorting. Conversely, identical graphs would not guarantee identical topic distributions, since the PCA lens involves information loss that can merge points that were distinct in the original high-dimensional space. As a result, the most productive role for Mapper in our context is as an exploratory tool to suggest which topics or structural features warrant further testing, rather than to produce evidence of agenda-setting. The prominence of Tax/Revenue clusters identified by TDA served as partial motivation for the fiscal/non-fiscal split that proved informative in the main analysis.
+
+\newpage
+
+\section*{Appendix B, Full Results for Main Tests}
+Note that F-test results as presented in the main paper is complete, and thus we omit it here.
+\vspace{-24pt}
+\subsection{McCrary Density Tests}
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{lccc}
+        \hline
+        Sample & T-stat & P-value & Ratio \\
+        \hline
+        All Measures & 0.856 & 0.3920 & 1.125 \\
+        Initiatives & $-0.444$ & 0.6570 & 0.906 \\
+        \quad Init. --- Fiscal & $-1.046$ & 0.2955 & 0.649 \\
+        \quad Init. --- Non-fiscal & 0.365 & 0.7153 & 1.093 \\
+        Legislative Referenda & 1.519 & 0.1286 & 1.301 \\
+        \quad Leg.Ref. --- Fiscal & 2.636 & 0.0084 & 1.895 \\
+        \quad Leg.Ref. --- Non-fiscal & $-0.016$ & 0.9873 & 0.997 \\
+        Popular Referenda & 0.138 & 0.8902 & 1.073 \\
+        \hline
+    \end{tabular}
+    \caption{Density test results across measure types and fiscal status}
+    \label{tab:density_comprehensive}
+\end{table}
+
+\subsection{Covariate Balance Tests}
+
+\input{appendix_longtable.tex}
+
+\end{document}
